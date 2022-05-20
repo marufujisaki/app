@@ -1,0 +1,100 @@
+// Colors
+$bg-blue: #e3f2fd;
+$purple: #673ab7;
+$dark-purple: #6036a7;
+$gray: #fafafa;
+$dark-gray: #a7a7a7;
+$blue: #2196f3;
+
+// layout
+.container {
+  background-color: $bg-blue;
+  height: calc(100vh + 2rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.signup {
+  background-color: #fff;
+  padding: 1.5rem 3rem;
+  border-radius: 10px;
+  box-shadow: 2px 4px 7px 0px rgba(148, 148, 148, 0.2);
+  > form {
+    > h1 {
+      color: $purple;
+      text-align: center;
+    }
+    > p {
+      text-align: center;
+      color: #9e9eab;
+      > a {
+        text-decoration: none;
+        color: $purple;
+      }
+    }
+    > .credentials {
+      margin-bottom: 2rem;
+    }
+    > button[type="submit"] {
+      outline: none;
+      border: none;
+      text-align: center;
+      width: 100%;
+      background-color: $purple;
+      padding: 0.8rem;
+      color: #fff;
+      border-radius: 7px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+
+      &:hover {
+        background-color: $dark-purple;
+      }
+    }
+    > .flexForm {
+      display: flex;
+      > section {
+        margin: 0 1rem;
+        width: 300px;
+        > div {
+          width: auto;
+          > input {
+            display: block;
+            width: 100%;
+          }
+          .password {
+            display: inline-block;
+            width: 90%;
+          }
+        }
+        .stateSelect {
+          margin: 1rem 0;
+          > select {
+            width: 100%;
+            .default {
+              color: $dark-gray;
+            }
+          }
+          &:focus-within {
+            > label {
+              color: $blue;
+            }
+          }
+        }
+        .industryTitle,
+        .stateTitle {
+          line-height: 0.8rem;
+          margin: 0.5rem 0;
+          font-size: 0.8rem;
+          font-weight: 400;
+          display: block;
+        }
+        .stateTitle {
+          color: $dark-gray;
+        }
+      }
+    }
+  }
+}

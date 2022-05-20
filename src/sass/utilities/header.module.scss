@@ -1,0 +1,141 @@
+$light-purple: #ede7f6;
+$light-blue: #e3f2fd;
+$purple: #673ab7;
+$dark-purple: #6036a7;
+$gray: #fafafa;
+$dark-gray: #a7a7a7;
+$blue: #2196f3;
+
+header {
+  display: flex;
+  padding: 1.1rem 1.5rem;
+  justify-content: space-between;
+  background-color: #fff;
+  > div {
+    display: flex;
+    .logo {
+      font-family: "Radio Canada", sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .menuBtn {
+        margin-left: 1rem;
+        background-color: $light-purple;
+        color: $purple;
+        padding: 0.5rem 0.7rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        outline: none;
+        border: none;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        &:hover {
+          background-color: $dark-purple;
+          color: white;
+        }
+      }
+    }
+    > div:first-child {
+      width: 250px;
+    }
+  }
+}
+
+.flexDiv {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  .notification {
+    margin-right: 1rem;
+    background-color: $light-purple;
+    color: $purple;
+    padding: 0.5rem 0.7rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    display: inline-block;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    &:hover {
+      background-color: $dark-purple;
+      color: white;
+    }
+  }
+  .settings {
+    background-color: $light-blue;
+    padding: 0.5rem;
+    color: $blue;
+    border-radius: 27px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    &:hover {
+      background-color: $blue;
+      color: $light-blue;
+      > p {
+        color: white;
+      }
+    }
+    > * {
+      margin: 0.5rem 1rem;
+      font-size: 1.15rem;
+      font-family: "Radio Canada", sans-serif;
+    }
+    > p {
+      display: inline;
+      font-size: 1rem;
+      transition: color 0.3s ease-in-out;
+    }
+  }
+}
+
+.profileDropdown {
+  display: none;
+  z-index: 1;
+  position: absolute;
+  top: 90px;
+  right: 30px;
+  background-color: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  box-shadow: rgb(0 0 0 / 20%) 0px 8px 10px -5px,
+    rgb(0 0 0 / 14%) 0px 16px 24px 2px, rgb(0 0 0 / 12%) 0px 6px 30px 5px;
+
+  > p {
+    margin: 0.4rem 2.5rem 1rem 0.7rem;
+    text-align: left;
+    > span {
+      font-weight: bold;
+    }
+  }
+  hr {
+    border-top: 1px solid $gray;
+  }
+
+  div {
+    a {
+      display: flex;
+      padding: 1rem 1.5rem;
+      border-radius: 15px;
+      margin: 0;
+      text-decoration: none;
+      color: #535353;
+      transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+      &:hover {
+        background-color: $light-purple;
+        color: $dark-purple;
+      }
+      > * {
+        margin-right: 1rem;
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

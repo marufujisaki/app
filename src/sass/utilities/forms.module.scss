@@ -1,0 +1,236 @@
+$bg-blue: #e3f2fd;
+$purple: #673ab7;
+$dark-purple: #6036a7;
+$gray: #fafafa;
+$dark-gray: #a7a7a7;
+$blue: #2196f3;
+
+.errorMessage {
+  text-align: center;
+  width: 100%;
+  background-color: #f8d7da;
+  padding: 1rem 0;
+  border: 1px solid #f5c6cb;
+  border-radius: 10px;
+  color: #721c24;
+  transition: display 0.5s ease;
+}
+.fullInput {
+  box-sizing: border-box;
+  background-color: $gray;
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid $dark-gray;
+  border-radius: 12px;
+  cursor: text;
+  position: relative;
+
+  &:hover {
+    border: 1px solid #333333;
+  }
+
+  &:focus-within {
+    outline: 3px solid $blue;
+    outline-offset: -3px;
+    > label {
+      color: $blue;
+    }
+  }
+
+  > label {
+    display: block;
+    color: $dark-gray;
+    cursor: text;
+    margin-top: 0.2rem;
+  }
+
+  > input {
+    outline: none;
+    border: none;
+    background-color: $gray;
+    padding: 0.3rem 0;
+    color: #212121;
+  }
+  .eyeIcon {
+    display: inline;
+    position: absolute;
+    right: 15px;
+    color: $dark-gray;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    &:hover {
+      color: #212121;
+    }
+  }
+}
+
+.scrollingSelectContainer {
+  color: $dark-gray;
+  &:focus-within {
+    > p:first-child {
+      color: $blue;
+    }
+  }
+  margin-bottom: 0.7rem;
+}
+
+.scrollingSelect {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    width: auto;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+  }
+  .card {
+    > label {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.2rem;
+      margin: 0 1.2rem 0 0;
+      border: 1px solid $dark-gray;
+      border-radius: 12px;
+      cursor: pointer;
+      .icon {
+        font-size: 2rem;
+        color: $dark-gray;
+      }
+      &:hover {
+        border: 1px solid #333333;
+      }
+    }
+    > input[type="radio"] {
+      margin: 0;
+      width: 0;
+      height: 0;
+      line-height: 0;
+    }
+    &:focus-within {
+      > label {
+        outline: 3px solid $blue;
+        outline-offset: -3px;
+        > * {
+          color: $blue;
+        }
+      }
+    }
+    > p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #212121;
+      display: none;
+    }
+  }
+}
+
+select {
+  box-sizing: border-box;
+  background-color: $gray;
+  padding: 0.5rem 1rem;
+  border: 1px solid $dark-gray;
+  border-radius: 12px;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid #333333;
+  }
+
+  &:focus {
+    outline: 3px solid $blue;
+    outline-offset: -3px;
+  }
+}
+
+.searchInput {
+  box-sizing: border-box;
+  background-color: $gray;
+  margin: 0 1.3rem;
+  padding: 0.8rem 1.3rem;
+  border: 1px solid $dark-gray;
+  border-radius: 17px;
+  cursor: text;
+
+  &:hover {
+    border: 1px solid #333333;
+  }
+
+  &:focus-within {
+    outline: 3px solid $blue;
+    outline-offset: -3px;
+  }
+
+  &:first-child {
+    color: $dark-gray;
+  }
+
+  > input[type="search"] {
+    outline: none;
+    border: none;
+    background-color: $gray;
+    padding: 0.3rem 0;
+    margin: 0 1rem;
+    color: #212121;
+    width: 350px;
+  }
+}
+
+.flexForm {
+  display: flex;
+  > div {
+    margin: 0 2rem;
+    > label {
+      display: block;
+      margin: 1rem 0;
+    }
+    > div {
+      > label {
+        display: block;
+      }
+      > p > input {
+        border: none;
+        width: 90%;
+        outline: none;
+      }
+    }
+  }
+  .flexDivChild {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    > textarea {
+      border-radius: 8px;
+      outline: none;
+      background-color: $gray;
+      border: 1px solid $dark-gray;
+      padding: 0.5rem;
+    }
+    &:nth-child(3) {
+      width: 200px;
+      margin: auto;
+      > button {
+        padding: 0.7rem 1rem;
+        font-size: 1.2rem;
+        font-weight: 500;
+        border-radius: 8px;
+        background-color: #2196f3;
+        border: none;
+        color: #fff;
+      }
+    }
+  }
+}

@@ -1,0 +1,123 @@
+$light-purple: #ede7f6;
+$light-blue: #e3f2fd;
+$purple: #673ab7;
+$dark-purple: #6036a7;
+$gray: #fafafa;
+$dark-gray: #a7a7a7;
+$blue: #2196f3;
+
+.layout {
+  display: flex;
+  position: relative;
+}
+
+.menuContainer {
+  z-index: 1; /* Stay on top */
+  transition: transform 0.5s ease;
+  -webkit-transform: translateX(0px);
+  -ms-transform: translateX(0px);
+  transform: translateX(0px);
+  position: fixed;
+}
+
+main {
+  width: calc(100% - 350px);
+  background-color: $light-blue;
+  margin: 0.6rem 1rem 0 300px;
+  border-radius: 15px;
+  padding: 1.4rem;
+  height: 100%;
+  transition: margin-left 0.5s, width 0.5s;
+  .card,
+  .users,
+  .chartCard {
+    background-color: #fff;
+    border-radius: 15px;
+    border: 1px solid #cce7fc;
+    padding: 1rem;
+    transition: width 0.5s;
+    width: auto;
+  }
+  .chartCard {
+    width: 650px;
+  }
+  .pendingCards {
+    display: flex;
+    > .miniCard {
+      width: 50%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      margin: 1.5rem;
+      border-radius: 12px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: width 0.5s;
+      background: linear-gradient(
+        17deg,
+        rgba(30, 136, 229, 1) 0%,
+        rgba(23, 97, 181, 1) 100%
+      );
+      > *:first-child {
+        background-color: #1565c0;
+        color: $light-blue;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        font-size: 1.4rem;
+        cursor: pointer;
+      }
+      &:first-child {
+        background: linear-gradient(
+          17deg,
+          rgba(103, 64, 182, 1) 0%,
+          rgba(90, 50, 174, 1) 37%,
+          rgba(69, 39, 160, 1) 100%
+        );
+        > *:first-child {
+          background-color: #4527a0;
+          color: $light-purple;
+        }
+      }
+
+      > div {
+        margin-left: 2rem;
+        h2 {
+          margin: 0.5rem 0;
+        }
+        p {
+          margin: 0;
+          color: #ffffff80;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+  .pendingCharts {
+    display: flex;
+    & .card {
+      width: 65%;
+      height: fit-content;
+      > *:first-child {
+        width: 100%;
+      }
+    }
+  }
+  .users {
+    margin-left: 2rem;
+    padding: 0.5rem 2rem;
+    width: 25%;
+    > p:first-child {
+      font-weight: 500;
+      font-size: 1.2rem;
+    }
+    > p {
+      position: relative;
+      > * {
+        display: inline;
+        position: absolute;
+        right: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+.tableCard {
+  background-color: #fff;
+  border-radius: 15px;
+  border: 1px solid #cce7fc;
+  padding: 1rem;
+  position: relative;
+  > button {
+    margin: 0 0.5rem 0.8rem 0.7rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    background-color: #ede7f6;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    &:hover {
+      background-color: #6036a7;
+      color: #fff;
+    }
+  }
+}
