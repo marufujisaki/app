@@ -2,6 +2,8 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import ServicesContext from "../context/ServicesContext";
 
 // Sass modules
 import styles from "../sass/Login.module.scss";
@@ -11,11 +13,11 @@ import forms from "../sass/utilities/forms.module.scss";
 // Font Awesome icons
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import AuthContext from "../context/AuthContext";
 
 export default function Login() {
   // Context
   const { logged, loggedUser, handleAuth } = useContext(AuthContext);
+  const { api } = useContext(ServicesContext);
 
   // State
   const [passwordEye, setPasswordEye] = useState(false);
@@ -54,8 +56,11 @@ export default function Login() {
           `{"unique_id":${json.unique_id},"user_name":"${json.user_name}","contact_name":"${json.contact_name}","auth":${json.auth},"user_type":${json.user_type}}`
         );
         handleAuth(user);
-        console.log(loggedUser.auth);
-        navigate("/");
+        if (loggedUser.auth) {
+          navigate("/");
+        } else {
+          navigate("/user-not-approved");
+        }
       } else {
         refError.current.style.display = "block";
         refError.current.textContent = json.message;
@@ -64,7 +69,7 @@ export default function Login() {
         }, 6000);
       }
     };
-    validUser("http://localhost/app/users/?login=1", {
+    validUser(api + "users/?login=1", {
       method: "POST",
       body: JSON.stringify(form),
     });

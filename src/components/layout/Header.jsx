@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
+import AuthContext from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 import header from "../../sass/utilities/header.module.scss";
 import "../../sass/utilities/typography.module.scss";
@@ -13,32 +15,35 @@ import { faBell, faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Header(props) {
+  // Context
+  const { loggedUser, handleAuth } = useContext(AuthContext);
+
   // State
   const [profileVisible, setProfileVisible] = useState(false);
 
+  //Refs
   let refProfileBtn = useRef(),
     refProfileOptions = useRef();
 
-  const handleToggleMenu = (e) => {
-    if (
-      props.menu.current.style.webkitTransform === "translateX(0px)" ||
-      props.menu.current.style.transform === "translateX(0px)" ||
-      props.menu.current.style.msTransform === "translateX(0px)"
-    ) {
+  // Navigation
+  let navigate = useNavigate();
+
+  const handleToggleMenu = () => {
+    if (props.main.current.style.marginLeft === "300px") {
       props.menu.current.style.webkitTransform = "translateX(-110%)";
       props.menu.current.style.msTransform = "translateX(-110%)";
       props.menu.current.style.transform = "translateX(-110%)";
-      props.main.current.style.marginLeft = "1rem";
-      props.main.current.style.width = "95%";
+      props.main.current.style.marginLeft = "0";
+      props.main.current.style.width = "100%";
     } else {
       props.menu.current.style.webkitTransform = "translateX(0px)";
       props.menu.current.style.msTransform = "translateX(0px)";
       props.menu.current.style.transform = "translateX(0px)";
       props.main.current.style.marginLeft = "300px";
-      props.main.current.style.width = "calc(100% - 350px)";
+      props.main.current.style.width = "calc(100% - 300px)";
     }
   };
-  const handleProfileOptions = (e) => {
+  const handleProfileOptions = () => {
     if (!profileVisible) {
       setProfileVisible(true);
       refProfileBtn.current.style.backgroundColor = "#2196f3";
@@ -52,6 +57,10 @@ export default function Header(props) {
       refProfileOptions.current.style.display = "none";
       refProfileOptions.current.style.animation = "none";
     }
+  };
+  const handleLogout = () => {
+    handleAuth(null);
+    navigate("/login");
   };
   return (
     <>
@@ -83,7 +92,7 @@ export default function Header(props) {
               className={header.settings}
               onClick={handleProfileOptions}
             >
-              <p>Cliente Nuevo 01 C.A</p>
+              <p>{loggedUser.user_name}</p>
               <FontAwesomeIcon icon={faGear} />
             </button>
           </div>
@@ -91,16 +100,21 @@ export default function Header(props) {
       </header>
       <div ref={refProfileOptions} className={header.profileDropdown}>
         <p>
-          <span>Hola,</span> Nombre Contacto!
+          <span>Hola,</span> {loggedUser.contact_name}
         </p>
         <hr />
         <div>
-          <a href="bethacorp07.com/support">
-            <FontAwesomeIcon icon={faCircleQuestion} /> Help
+          <a
+            href="bethacorp07.com/support"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={header.links}
+          >
+            <FontAwesomeIcon icon={faCircleQuestion} /> Ayuda
           </a>
-          <a href="/logout">
-            <FontAwesomeIcon icon={faArrowRightFromBracket} /> Logout
-          </a>
+          <p className={header.links} onClick={handleLogout}>
+            <FontAwesomeIcon icon={faArrowRightFromBracket} /> Cerrar sesión
+          </p>
         </div>
       </div>
     </>

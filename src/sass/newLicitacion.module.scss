@@ -1,0 +1,111 @@
+$bg-blue: #e3f2fd;
+$purple: #673ab7;
+$dark-purple: #6036a7;
+$gray: #fafafa;
+$dark-gray: #a7a7a7;
+$blue: #2196f3;
+
+.formCard {
+  background-color: #fff;
+  border-radius: 15px;
+  margin-top: 2rem;
+  width: 1000px;
+  padding: 1rem;
+  position: relative;
+  .flexForm {
+    display: flex;
+    > div {
+      padding: 0.5rem 1rem;
+    }
+    .flexChild {
+      width: 50%;
+      h3 {
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.dropdown {
+  position: relative;
+  .button {
+    box-sizing: border-box;
+    background-color: $gray;
+    padding: 0.5rem 1rem;
+    border: 1px solid $dark-gray;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+
+    &:hover {
+      border: 1px solid #333333;
+    }
+    p {
+      display: inline-block;
+      margin: 0 2rem 0 0;
+    }
+  }
+  .options {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    z-index: 11;
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0.5rem 0;
+    border-radius: 3px;
+    border: 1px solid $gray;
+    box-shadow: 0px 0px 16px -3px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 0px 16px -3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 16px -3px rgba(0, 0, 0, 0.5);
+    li {
+      padding: 0.5rem 2rem;
+      cursor: pointer;
+      &:hover {
+        background-color: rgb(202, 122, 122);
+        .suboptions {
+          display: block;
+        }
+      }
+    }
+  }
+  .suboptions {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    width: 80%;
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0.5rem 0;
+    top: 0;
+    left: 320px;
+    border-radius: 3px;
+    border: 1px solid $gray;
+    box-shadow: 1px 2px 16px -3px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 2px 16px -3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 2px 16px -3px rgba(0, 0, 0, 0.5);
+    li {
+      padding: 0.5rem 2rem;
+      cursor: pointer;
+      &:hover {
+        background-color: rgb(202, 122, 122);
+      }
+      input {
+        opacity: 0;
+        position: absolute;
+      }
+      label {
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.details {
+  p {
+    display: inline-block;
+  }
+}

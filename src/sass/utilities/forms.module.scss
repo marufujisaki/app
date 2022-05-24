@@ -156,41 +156,7 @@ select {
   }
 }
 
-.searchInput {
-  box-sizing: border-box;
-  background-color: $gray;
-  margin: 0 1.3rem;
-  padding: 0.8rem 1.3rem;
-  border: 1px solid $dark-gray;
-  border-radius: 17px;
-  cursor: text;
-
-  &:hover {
-    border: 1px solid #333333;
-  }
-
-  &:focus-within {
-    outline: 3px solid $blue;
-    outline-offset: -3px;
-  }
-
-  &:first-child {
-    color: $dark-gray;
-  }
-
-  > input[type="search"] {
-    outline: none;
-    border: none;
-    background-color: $gray;
-    padding: 0.3rem 0;
-    margin: 0 1rem;
-    color: #212121;
-    width: 350px;
-  }
-}
-
 .flexForm {
-  display: flex;
   > div {
     margin: 0 2rem;
     > label {
@@ -230,6 +196,34 @@ select {
         background-color: #2196f3;
         border: none;
         color: #fff;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .fullInput {
+    padding: 0.5rem 0.8rem;
+    > label {
+      font-size: 0.75rem;
+    }
+    > input {
+      font-size: 0.9rem;
+      padding: 0.3rem 0;
+    }
+  }
+  select {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  .scrollingSelect {
+    .card {
+      > label {
+        padding: 1rem;
+        margin: 0 1rem 0 0;
+        .icon {
+          font-size: 1.5rem;
+        }
       }
     }
   }

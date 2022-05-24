@@ -97,7 +97,7 @@ header {
 
 .profileDropdown {
   display: none;
-  z-index: 1;
+  z-index: 11;
   position: absolute;
   top: 90px;
   right: 30px;
@@ -120,13 +120,14 @@ header {
   }
 
   div {
-    a {
+    .links {
       display: flex;
       padding: 1rem 1.5rem;
       border-radius: 15px;
       margin: 0;
       text-decoration: none;
       color: #535353;
+      cursor: pointer;
       transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
       &:hover {
         background-color: $light-purple;

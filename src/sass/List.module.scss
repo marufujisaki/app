@@ -1,21 +1,38 @@
 .tableCard {
   background-color: #fff;
   border-radius: 15px;
-  border: 1px solid #cce7fc;
+  margin-top: 2rem;
+  max-width: calc(100% - 250px);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 1rem;
   position: relative;
-  > button {
-    margin: 0 0.5rem 0.8rem 0.7rem;
-    border: none;
+  &::-webkit-scrollbar {
+    width: auto;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
     border-radius: 10px;
-    padding: 0.6rem 1rem;
-    font-size: 1.1rem;
-    cursor: pointer;
-    background-color: #ede7f6;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    &:hover {
-      background-color: #6036a7;
-      color: #fff;
-    }
+    border: 3px solid #ffffff;
+  }
+}
+.modalButton {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  background-color: #65c4b3;
+  font-weight: 500;
+  color: #fff;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  &:hover {
+    background-color: #fff;
+    color: #65c4b3;
+    border: 1px solid #65c4b3;
   }
 }

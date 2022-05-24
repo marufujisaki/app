@@ -19,7 +19,6 @@ $blue: #2196f3;
   border-radius: 10px;
   box-shadow: 2px 4px 7px 0px rgba(148, 148, 148, 0.2);
   width: 400px;
-
   > form {
     > h1 {
       color: $purple;
@@ -62,5 +61,36 @@ $blue: #2196f3;
         width: 100%;
       }
     }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .login {
+    padding: 2.3rem;
+    width: 380px;
+    > form {
+      > h1 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      > p {
+        font-size: 0.9rem;
+      }
+      .credentials {
+        margin: 0.5rem 0 1.2rem 0;
+      }
+      > button[type="submit"] {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .login {
+    padding: 2rem;
+    width: 300px;
+    border-radius: 15px;
   }
 }

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
 
 import "../../sass/utilities/menu.module.scss";
 
 // Font Awesome icons
 import {
+  faUserCheck,
   faChartLine,
   faTableList,
   faUsers,
@@ -13,6 +15,8 @@ import { faSquarePlus, faFileLines } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Menu() {
+  // Context
+  const { loggedUser } = useContext(AuthContext);
   return (
     <>
       {/* SIDE MENU */}
@@ -26,34 +30,67 @@ export default function Menu() {
         </div>
         <hr />
         <p>Licitaciones</p>
-        <div>
-          <Link to="/nueva-licitacion">
-            <FontAwesomeIcon icon={faSquarePlus} />
-            Nueva Licitación
-          </Link>
-        </div>
-        <div>
-          <Link to="/licitaciones">
-            <FontAwesomeIcon icon={faTableList} />
-            Licitaciones
-          </Link>
-        </div>
+        {!loggedUser.user_type ? (
+          <div>
+            <Link to="/licitaciones">
+              <FontAwesomeIcon icon={faTableList} />
+              Licitaciones
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <div>
+              <Link to="/nueva-licitacion">
+                <FontAwesomeIcon icon={faSquarePlus} />
+                Nueva Licitación
+              </Link>
+            </div>
+            <div>
+              <Link to="/licitaciones">
+                <FontAwesomeIcon icon={faTableList} />
+                Mis licitaciones
+              </Link>
+            </div>
+          </div>
+        )}
         <hr />
         <p>Ofertas</p>
-        <div>
-          <Link to="/ofertas">
-            <FontAwesomeIcon icon={faFileLines} />
-            Ofertas pendientes
-          </Link>
-        </div>
+        {!loggedUser.user_type ? (
+          <div>
+            <Link to="/ofertas">
+              <FontAwesomeIcon icon={faFileLines} />
+              Mis ofertas
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <Link to="/ofertas">
+              <FontAwesomeIcon icon={faFileLines} />
+              Ofertas pendientes
+            </Link>
+          </div>
+        )}
+
         <hr />
-        <p>Usuarios</p>
-        <div>
-          <Link to="/">
-            <FontAwesomeIcon icon={faUsers} />
-            Lista de Usuarios
-          </Link>
-        </div>
+        {!loggedUser.user_type ? (
+          <div>
+            <p>Usuarios</p>
+            <div>
+              <Link to="/pending-users">
+                <FontAwesomeIcon icon={faUserCheck} />
+                Usuarios pendientes
+              </Link>
+            </div>
+            <div>
+              <Link to="/user-list">
+                <FontAwesomeIcon icon={faUsers} />
+                Lista de Usuarios
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </nav>
     </>
   );

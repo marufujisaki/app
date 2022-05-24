@@ -98,3 +98,44 @@ $blue: #2196f3;
     }
   }
 }
+
+@media screen and (max-width: 1024px) {
+  .container {
+    height: 100vh;
+  }
+  .signup {
+    padding: 2rem 2.3rem;
+    // width: 380px;
+    > form {
+      > h1 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      > p {
+        font-size: 0.9rem;
+      }
+      .credentials {
+        margin: 0.5rem 0 0.8rem 0;
+      }
+      > button[type="submit"] {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    display: block;
+  }
+  .signup {
+    padding: 2rem;
+    border-radius: 15px;
+    form {
+      .flexForm {
+        display: block;
+      }
+    }
+  }
+}
