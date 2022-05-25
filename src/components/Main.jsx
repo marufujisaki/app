@@ -12,6 +12,9 @@ import { AuthProvider } from "../context/AuthContext";
 import { ServicesProvider } from "../context/ServicesContext";
 import UserList from "./UserList";
 import PendingUsers from "./PendingUsers";
+import MyLicitaciones from "./MyLicitaciones";
+import PendingLicitacions from "./PendingLicitacions";
+import PendingOfertas from "./PendingOfertas";
 
 export default function Main() {
   return (
@@ -26,8 +29,15 @@ export default function Main() {
             element={<UserNotApproved />}
           ></Route>
           <Route path="/licitaciones" element={<LicitacionList />}></Route>
-          <Route path="/ofertas" element={<OfertaList />}></Route>
           <Route path="/nueva-licitacion" element={<NewLicitacion />}></Route>
+          <Route path="/mis-licitaciones" element={<MyLicitaciones />}></Route>
+          <Route
+            path="/pending-licitaciones"
+            element={<PendingLicitacions />}
+          ></Route>
+          <Route path="/licitaciones" element={<LicitacionList />}></Route>
+          <Route path="/ofertas" element={<OfertaList />}></Route>
+          <Route path="/pending-ofertas" element={<PendingOfertas />}></Route>
           <Route path="/user-list" element={<UserList />}></Route>
           <Route path="/pending-users" element={<PendingUsers />}></Route>
         </Routes>

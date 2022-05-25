@@ -1,4 +1,14 @@
-.tableCard {
+$light-purple: #ede7f6;
+$light-blue: #e3f2fd;
+$purple: #673ab7;
+$dark-purple: #6036a7;
+$gray: #fafafa;
+$dark-gray: #a7a7a7;
+$blue: #2196f3;
+$red: #e07272;
+
+.tableCard,
+.licTable {
   background-color: #fff;
   border-radius: 15px;
   margin-top: 2rem;
@@ -21,7 +31,14 @@
     border: 3px solid #ffffff;
   }
 }
-.modalButton {
+.licTable {
+  width: 1300px;
+  overflow-x: hidden;
+}
+.modalButton,
+.modalApprove,
+.modalDecline,
+.modalButtonDownload {
   border: none;
   border-radius: 10px;
   padding: 0.5rem 0.8rem;
@@ -29,10 +46,58 @@
   background-color: #65c4b3;
   font-weight: 500;
   color: #fff;
+  text-decoration: none;
+  border: 1px solid #65c4b3;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   &:hover {
     background-color: #fff;
     color: #65c4b3;
-    border: 1px solid #65c4b3;
+  }
+}
+.modalApprove {
+  display: inline;
+  margin-right: 0.5rem;
+}
+.modalDecline {
+  display: inline;
+  margin-left: 0.5rem;
+  background-color: $red;
+  color: #fff;
+  border: 1px solid $red;
+
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  &:hover {
+    background-color: #fff;
+    color: $red;
+  }
+}
+
+.modalButtonDownload {
+  background-color: $gray;
+  color: #333;
+  border: 1px solid $gray;
+
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  &:hover {
+    background-color: #333;
+    color: $gray;
+  }
+}
+
+.expandedContainer {
+  padding: 0 1rem 1rem 1rem;
+  h3 {
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  > div > div {
+    display: flex;
+    p {
+      margin: 0.5rem 1rem;
+      span {
+        font-weight: 500;
+      }
+    }
   }
 }

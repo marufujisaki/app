@@ -15,7 +15,11 @@ import styles from "../sass/Dashboard.module.scss";
 import "../sass/utilities/typography.module.scss";
 import table from "../sass/List.module.scss";
 
-export default function OfertaList() {
+// Font awesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+
+export default function PendingOfertas() {
   // Context
   const { logged, loggedUser } = useContext(AuthContext);
   const { api } = useContext(ServicesContext);
@@ -24,18 +28,25 @@ export default function OfertaList() {
   const [licitaciones, setLicitaciones] = useState([]);
   const [users, setUsers] = useState([]);
   const [ofertas, setOfertas] = useState([]);
+  const [filteredOfertas, setFilteredOfertas] = useState([]);
+  const [filterFlag, setFilterFlag] = useState("Cargando...");
   const estadoArray = ["Publicada", "Rechazada", "Cotizada"];
+
+  const [modal, setModal] = useState(false);
+  const [offerID, setOfferID] = useState(null);
+  const [offerState, setOfferState] = useState(null);
 
   // Refs
   let refMenu = useRef(),
-    refMain = useRef();
+    refMain = useRef(),
+    refModal = useRef();
 
   // Navigation
   const navigate = useNavigate();
 
   // Table info
   const columns = [
-    { name: "ID", selector: (row) => row.id, sortable: true },
+    { name: "ID", selector: (row) => row.id, width: "120px", sortable: true },
     {
       name: "Empresa",
       selector: (row) =>
@@ -47,7 +58,7 @@ export default function OfertaList() {
     },
     {
       name: "Estado",
-      selector: (row) => estadoArray[row.state - 1],
+      selector: (row) => estadoArray[row.state],
       width: "160px",
       sortable: true,
     },
@@ -57,7 +68,7 @@ export default function OfertaList() {
       cell: (row) => (
         <a
           href={api + "ofertas/files/" + row.route}
-          className={table.modalButton}
+          className={table.modalButtonDownload}
           target="_blank"
           rel="noreferrer noopener"
           download
@@ -65,6 +76,32 @@ export default function OfertaList() {
           Descargar
         </a>
       ),
+    },
+    {
+      name: "Opciones",
+      button: true,
+      cell: (row) => (
+        <div className="table.modalMiniContainer">
+          <button
+            className={table.modalApprove}
+            onClick={() => {
+              handleModal(row.id, 3);
+            }}
+          >
+            Cotizar
+          </button>
+          <button
+            className={table.modalDecline}
+            onClick={() => {
+              handleModal(row.id, 2);
+            }}
+          >
+            Declinar
+          </button>
+        </div>
+      ),
+      width: "220px",
+      allowOverflow: true,
     },
   ];
 
@@ -75,13 +112,42 @@ export default function OfertaList() {
     selectAllRowsItemText: "Todos",
   };
 
+  // Event handlers
+  const handleAction = (e) => {
+    e.preventDefault();
+    let approveUser = async (url, params) => {
+      let res = await fetch(url, params);
+      let json = await res.json();
+      if (json.success) {
+        handleModal("none");
+      }
+    };
+    approveUser(api + "ofertas/?actualizar=1", {
+      method: "POST",
+      body: JSON.stringify({ id: offerID, state: offerState }),
+    });
+  };
+  const handleModal = (offer, state) => {
+    if (!modal) {
+      setModal(true);
+      refModal.current.style.display = "flex";
+      setOfferID(offer);
+      setOfferState(state);
+    } else {
+      setModal(false);
+      refModal.current.style.display = "none";
+      setOfferID(null);
+      setOfferState(null);
+    }
+  };
+
   // Redirect
   useEffect(() => {
     !logged
       ? navigate("/login")
       : !loggedUser.auth
       ? navigate("/user-not-approved")
-      : loggedUser.user_type && navigate("/");
+      : !loggedUser.user_type && navigate("/");
   });
 
   // GET requests
@@ -102,7 +168,7 @@ export default function OfertaList() {
       setOfertas(json);
     };
     getOfertas(api + "ofertas/");
-  }, [api]);
+  }, [api, ofertas]);
   useEffect(() => {
     let getUser = async (url) => {
       let res = await fetch(url);
@@ -111,6 +177,29 @@ export default function OfertaList() {
     };
     getUser(api + "users/");
   }, [api]);
+
+  // UI rerender
+  useEffect(() => {
+    if (ofertas.length > 0 && licitaciones.length > 0 && users.length > 0) {
+      const aux = ofertas.filter((el) => el.state === "0");
+      const aux2 = aux.filter(
+        // eslint-disable-next-line eqeqeq
+        (el) => el.lic_id == licitaciones[el.lic_id - 1].id
+      );
+      const aux3 = aux2.filter(
+        (el) =>
+          // eslint-disable-next-line eqeqeq
+          loggedUser.unique_id ==
+          users[licitaciones[el.lic_id - 1].user_id - 1].unique_id
+      );
+      aux.length > 0
+        ? aux2.length > 0 && aux3.length > 0
+          ? setFilteredOfertas([...aux])
+          : setFilterFlag("Vacio")
+        : setFilterFlag("Vacio");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ofertas, licitaciones, users]);
 
   return (
     <>
@@ -141,15 +230,28 @@ export default function OfertaList() {
                 <div className={table.licTable}>
                   <DataTable
                     columns={columns}
-                    data={ofertas}
+                    data={filteredOfertas}
                     pagination
                     paginationComponentOptions={paginationComponentOptions}
                   />
                 </div>
+                <div ref={refModal} className={styles.actionModal}>
+                  Desea cotizar esta oferta?
+                  <button type="submit" onClick={handleAction}>
+                    Aceptar
+                  </button>
+                  <i
+                    onClick={() => {
+                      handleModal("none");
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                  </i>
+                </div>
               </div>
             ) : (
               <div style={{ width: "100%" }}>
-                <p>Cargando...</p>
+                <p>{filterFlag}</p>
               </div>
             )}
           </div>

@@ -9,15 +9,22 @@ const AuthProvider = ({ children }) => {
 
   const handleAuth = (user) => {
     if (logged) {
-      setLogged(null);
       setLoggedUser(null);
+      setLogged(null);
     } else {
-      setLogged(true);
       setLoggedUser(user);
+      setLogged(true);
     }
   };
 
-  const data = { logged, loggedUser, handleAuth };
+  const handleLogout = () => {
+    if (logged) {
+      setLoggedUser(null);
+      setLogged(null);
+    }
+  };
+
+  const data = { logged, loggedUser, handleAuth, handleLogout };
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;
 };
 

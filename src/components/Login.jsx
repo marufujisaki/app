@@ -55,8 +55,8 @@ export default function Login() {
         const user = JSON.parse(
           `{"unique_id":${json.unique_id},"user_name":"${json.user_name}","contact_name":"${json.contact_name}","auth":${json.auth},"user_type":${json.user_type}}`
         );
-        handleAuth(user);
-        if (loggedUser.auth) {
+        if (json.auth === "1") {
+          handleAuth(user);
           navigate("/");
         } else {
           navigate("/user-not-approved");

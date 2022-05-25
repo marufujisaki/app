@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import ServicesContext from "../context/ServicesContext";
 
-// Layout
+// layout components
 import Header from "./layout/Header";
 import Menu from "./layout/Menu";
 
@@ -15,17 +15,17 @@ import styles from "../sass/Dashboard.module.scss";
 import "../sass/utilities/typography.module.scss";
 import table from "../sass/List.module.scss";
 
-export default function LicitacionList() {
+export default function MyLicitaciones() {
   // Context
   const { logged, loggedUser } = useContext(AuthContext);
   const { api } = useContext(ServicesContext);
 
   // State
-  const [licitaciones, setLicitaciones] = useState([]);
+  const [licitaciones, setLicitaciones] = useState({});
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [users, setUsers] = useState([]);
+
   const estadoArray = ["Sin respuesta", "En espera de respuesta", "Cotizada"];
 
   // Refs
@@ -38,7 +38,6 @@ export default function LicitacionList() {
   // Table info
   const columns = [
     { name: "ID", selector: (row) => row.lic_key },
-    { name: "Empresa", selector: (row) => users[row.user_id - 1].user_name },
     {
       name: "Fecha de Apertura",
       selector: (row) => row.release_date,
@@ -57,6 +56,7 @@ export default function LicitacionList() {
       sortable: true,
     },
   ];
+
   const ExpandedComponent = ({ data }) => (
     <div className={table.expandedContainer}>
       <h3>Productos</h3>
@@ -78,6 +78,7 @@ export default function LicitacionList() {
                 <p>
                   <span>Subcategoria: </span>
                   {subcategories[el.subcat_id - 1].name}
+                  {/* {el.subcat_id - 1} */}
                 </p>
               </div>
               <hr />
@@ -94,26 +95,27 @@ export default function LicitacionList() {
     selectAllRowsItemText: "Todos",
   };
 
-  // Redirect
   useEffect(() => {
     !logged
       ? navigate("/login")
       : !loggedUser.auth
       ? navigate("/user-not-approved")
-      : loggedUser.user_type && navigate("/");
+      : !loggedUser.user_type && navigate("/");
   });
 
-  // GET requests
   useEffect(() => {
-    let getList = async (url) => {
-      try {
-        let res = await fetch(url);
-        let json = await res.json();
-        setLicitaciones(json);
-      } catch (error) {}
+    let getLicitaciones = async (url, params) => {
+      let res = await fetch(url, params);
+      let json = await res.json();
+      setLicitaciones(json);
     };
-    getList(api + "licitaciones/");
+    getLicitaciones(api + "licitaciones/?consultar=1", {
+      method: "POST",
+      body: JSON.stringify({ user_id: loggedUser.unique_id }),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api]);
+
   useEffect(() => {
     let getSubcategories = async (url) => {
       let res = await fetch(url);
@@ -122,6 +124,7 @@ export default function LicitacionList() {
     };
     getSubcategories(api + "subcategorias/");
   }, [api]);
+
   useEffect(() => {
     let getCategories = async (url) => {
       let res = await fetch(url);
@@ -130,6 +133,7 @@ export default function LicitacionList() {
     };
     getCategories(api + "categorias/");
   }, [api]);
+
   useEffect(() => {
     let getProducts = async (url) => {
       let res = await fetch(url);
@@ -138,63 +142,53 @@ export default function LicitacionList() {
     };
     getProducts(api + "productos_servicios/");
   }, [api]);
-  useEffect(() => {
-    let getUser = async (url) => {
-      let res = await fetch(url);
-      let json = await res.json();
-      setUsers(json);
-    };
-    getUser(api + "users/");
-  }, [api]);
 
   return (
     <>
-      <Helmet>
-        <title>Licitaciones</title>
-      </Helmet>
-      {/* HEADER */}
-      <Header menu={refMenu} main={refMain} />
-      {/* <div className={styles.layout}> */}
-      {/* SIDE MENU */}
-      <div ref={refMenu} className={styles.menuContainer}>
-        <Menu />
-      </div>
-      {/* MAIN SECTION */}
-      <main
-        ref={refMain}
-        className={styles.mainTable}
-        style={{ marginLeft: "300px", width: "calc(100% - 300px)" }}
-      >
-        <div className={styles.top}></div>
-        <div className={styles.container}>
-          <h1 className={styles.title}>Todas las licitaciones</h1>
-          <div>
-            {licitaciones.length > 0 &&
-            categories.length > 0 &&
-            subcategories.length > 0 &&
-            products.length > 0 &&
-            users.length > 0 ? (
-              <div>
-                <div className={table.licTable}>
-                  <DataTable
-                    columns={columns}
-                    data={licitaciones}
-                    pagination
-                    paginationComponentOptions={paginationComponentOptions}
-                    expandableRows
-                    expandableRowsComponent={ExpandedComponent}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div style={{ width: "100%" }}>
-                <p>Cargando...</p>
-              </div>
-            )}
+      {logged && loggedUser.user_type && (
+        <div className={styles.bodyContainer}>
+          <Helmet>
+            <title>Mis Licitaciones</title>
+          </Helmet>
+          <Header menu={refMenu} main={refMain} />
+          <div ref={refMenu} className={styles.menuContainer}>
+            <Menu />
           </div>
+          <main
+            ref={refMain}
+            className={styles.mainTable}
+            style={{ marginLeft: "300px", width: "calc(100% - 300px)" }}
+          >
+            <div className={styles.top}></div>
+            <div className={styles.container}>
+              <h1 className={styles.title}>Mis licitaciones</h1>
+              <div>
+                {licitaciones.length > 0 &&
+                categories.length > 0 &&
+                subcategories.length > 0 &&
+                products.length > 0 ? (
+                  <div>
+                    <div className={table.licTable}>
+                      <DataTable
+                        columns={columns}
+                        data={licitaciones}
+                        pagination
+                        paginationComponentOptions={paginationComponentOptions}
+                        expandableRows
+                        expandableRowsComponent={ExpandedComponent}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ width: "100%" }}>
+                    <p>Cargando...</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
-      {/* </div> */}
+      )}
     </>
   );
 }

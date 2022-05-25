@@ -14,11 +14,26 @@ import forms from "../sass/utilities/forms.module.scss";
 import card from "../sass/newLicitacion.module.scss";
 
 // Font Awesome icons
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// const initialCategory = "Seleccione una categoría";
+const initialCategory = "Seleccione una categoría";
+
+const getDate = () => {
+  let today = new Date();
+  let year = today.getFullYear();
+  let month = today.getMonth() + 1;
+  let day = today.getDate();
+  if (month < 10) {
+    month = "0" + month;
+  }
+  if (day < 10) {
+    day = "0" + day;
+  }
+  const current_date = `${year}-${month}-${day}`;
+  return current_date;
+};
 
 export default function NewLicitacion() {
   // Context
@@ -26,22 +41,42 @@ export default function NewLicitacion() {
   const { api } = useContext(ServicesContext);
 
   // State
-  const [categoryModal, setCategoryModal] = useState(false);
-  // const [categoryText, setCategoryText] = useState(initialCategory);
+  // Arrays from API
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+
+  // All the category shit
+  const [categoryModal, setCategoryModal] = useState(false);
+  const [categoryText, setCategoryText] = useState(initialCategory);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredList, setFilteredList] = useState([]);
+
+  // Products
+  const [details, setDetails] = useState({});
+  const [products, setProducts] = useState([]);
+  const [lic_key, setLic_key] = useState(null);
+
+  // Licitacion
+  const [form, setForm] = useState({
+    user_id: loggedUser.unique_id,
+    release_date: getDate(),
+  });
+  const [productForm, setProductForm] = useState(null);
+  const flagArray = ["Enviando...", "Su licitación fue registrada con éxito"];
+  const [sended, setSended] = useState(flagArray[0]);
+  const [formEvent, setFormEvent] = useState(null);
 
   // Navigation
   const navigate = useNavigate();
 
   // Refs
-  let refMenu,
+  let refMenu = useRef(),
     refCategoryIcon = useRef(),
     refMain = useRef(),
     refCategories = useRef(),
-    refModalButton = useRef();
+    refModalButton = useRef(),
+    refError = useRef(),
+    refSuccessModal = useRef();
 
   // Modal - Categories
   const handleModal = () => {
@@ -51,13 +86,100 @@ export default function NewLicitacion() {
       refModalButton.current.style.outlineOffset = "-3px";
       refCategoryIcon.current.style.color = "#2196f3";
       setCategoryModal(true);
-      console.log(subcategories);
     } else {
       refCategories.current.style.display = "none";
       refModalButton.current.style.outline = "none";
       refModalButton.current.style.outlineOffset = "0";
       refCategoryIcon.current.style.color = "#000";
       setCategoryModal(false);
+    }
+  };
+  const handleCategory = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+    setCategoryText(e.target.id);
+    refCategories.current.style.display = "none";
+    refModalButton.current.style.outline = "none";
+    refModalButton.current.style.outlineOffset = "0";
+    refCategoryIcon.current.style.color = "#000";
+    setCategoryModal(false);
+  };
+
+  const handleInput = (e) => {
+    setDetails({
+      ...details,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const productSubmit = (e) => {
+    e.preventDefault();
+    setProducts([...products, details]);
+    setCategoryText(initialCategory);
+    e.target.reset();
+  };
+
+  const deleteProduct = (product) => {
+    const aux = products.filter((el, index) => index !== product);
+    setProducts([...aux]);
+  };
+
+  // Principal form
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+  let sendProducts = async (url, params, e) => {
+    try {
+      let res = await fetch(url, params);
+      let json = await res.json();
+      setProductForm(null);
+      setLic_key(null);
+      if (json.success) {
+        setSended(flagArray[1]);
+        setTimeout(() => {
+          refSuccessModal.current.style.display = "none";
+        }, 4000);
+      } else {
+        throw new Error(json.message);
+      }
+    } catch (err) {
+      refError.current.style.display = "block";
+      refError.current.textContent = err.message;
+      setTimeout(() => {
+        refError.current.style.display = "none";
+      }, 6000);
+    }
+  };
+  const formSubmit = (e) => {
+    e.preventDefault();
+    setFormEvent(e);
+    let sendLicitacion = async (url, params) => {
+      let res = await fetch(url, params);
+      let json = await res.json();
+      if (json.success) {
+        setLic_key(json.lic_key);
+        refSuccessModal.current.style.display = "block";
+      } else {
+        throw new Error(json.message);
+      }
+    };
+    try {
+      if (products.length <= 0)
+        throw new Error("Añada productos o servicios a su licitación");
+      else
+        sendLicitacion(api + "licitaciones/?insertar=1", {
+          method: "POST",
+          body: JSON.stringify(form),
+        });
+    } catch (err) {
+      refError.current.style.display = "block";
+      refError.current.textContent = err.message;
+      setTimeout(() => {
+        refError.current.style.display = "none";
+      }, 6000);
     }
   };
 
@@ -97,10 +219,43 @@ export default function NewLicitacion() {
 
   useEffect(() => {
     const aux = subcategories.filter(
-      (element) => element.cat_id === selectedCategory
+      // eslint-disable-next-line eqeqeq
+      (element) => element.cat_id == selectedCategory
     );
     setFilteredList([...aux]);
-  }, [selectedCategory, subcategories]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (lic_key) {
+      setProductForm({
+        lic_key,
+        products,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lic_key]);
+
+  useEffect(() => {
+    if (productForm) {
+      sendProducts(api + "productos_servicios/?insertar=1", {
+        method: "POST",
+        body: JSON.stringify(productForm),
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productForm]);
+
+  useEffect(() => {
+    const resetAll = (e) => {
+      if (sended === flagArray[1]) {
+        setProducts({});
+        e.target.reset();
+      }
+    };
+    resetAll(formEvent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sended]);
 
   return (
     <>
@@ -125,9 +280,14 @@ export default function NewLicitacion() {
             <div className={styles.container}>
               <h1 className={styles.title}>Nueva Licitación</h1>
               <div className={card.formCard}>
-                <form action="">
-                  <div className={card.flexForm}>
-                    <div className={card.flexChild}>
+                <div
+                  ref={refError}
+                  className={forms.errorMessage}
+                  style={{ display: "none" }}
+                ></div>
+                <div className={card.flexForm}>
+                  <div className={card.flexChild}>
+                    <form action="" onSubmit={productSubmit}>
                       <h3>Agregar productos o servicios</h3>
                       <div className={card.dropdown}>
                         <div
@@ -135,7 +295,7 @@ export default function NewLicitacion() {
                           onClick={handleModal}
                           className={card.button}
                         >
-                          <p>Seleccione una categoría</p>
+                          <p>{categoryText}</p>
                           <div ref={refCategoryIcon}>
                             <FontAwesomeIcon icon={faCaretDown} />
                           </div>
@@ -147,69 +307,110 @@ export default function NewLicitacion() {
                               onMouseEnter={() =>
                                 setSelectedCategory(index + 1)
                               }
-                              onMouseLeave={() => setSelectedCategory(null)}
                             >
                               {el.name}
-                              <ul className={card.suboptions}>
+                              <ul
+                                className={card.suboptions}
+                                style={{
+                                  top:
+                                    index > 4
+                                      ? index > 6
+                                        ? "180px"
+                                        : "150px"
+                                      : "0",
+                                }}
+                              >
                                 {filteredList.length > 0 &&
                                   filteredList.map((el, index) => (
-                                    <li key={index}>{el.name}</li>
+                                    <label key={index} htmlFor={el.name}>
+                                      <li>
+                                        <input
+                                          type="radio"
+                                          name="subcategoria"
+                                          value={el.id}
+                                          id={el.name}
+                                          onChange={handleCategory}
+                                        />
+                                        {el.name}
+                                      </li>
+                                    </label>
                                   ))}
-                                {/* <li>Servicio 1</li>
-                                <li>
-                                  <input
-                                    type="radio"
-                                    name="subcategoria"
-                                    value="servicio3"
-                                    id="servicio3"
-                                  />
-                                  <label htmlFor="servicio3">Servicio 3</label>
-                                </li> */}
                               </ul>
                             </li>
                           ))}
                         </ul>
                       </div>
                       <div className={card.details}>
-                        <div className={forms.fullInput}>
-                          <label htmlFor="details">Detalles del Producto</label>
-                          <input type="text" name="details" id="details" />
+                        <div className={card.fullInput}>
+                          <div className={forms.fullInput}>
+                            <label htmlFor="details">
+                              Detalles del Producto
+                            </label>
+                            <input
+                              type="text"
+                              name="details"
+                              id="details"
+                              onChange={handleInput}
+                              required
+                            />
+                          </div>
                         </div>
-                        <p>
+                        <button type="submit">
                           <FontAwesomeIcon icon={faSquarePlus} />{" "}
-                        </p>
+                        </button>
                       </div>
-                      <div>
-                        <hr />
-                        <p>
-                          Medidor de flujo Endress+Hauser <span>2</span>
-                        </p>
-                        <hr />
-                        <p>
-                          Medidor de presión Endress+Hauser <span>1</span>
-                        </p>
-                      </div>
-                    </div>
+                    </form>
                     <div>
+                      {products.length > 0 ? (
+                        products.map((el, index) => (
+                          <div key={index}>
+                            <hr />
+                            <div className={card.productItem}>
+                              <p>{el.details}</p>
+                              <button onClick={() => deleteProduct(index)}>
+                                <FontAwesomeIcon icon={faXmark} />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No hay productos agregados</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <form action="" onSubmit={formSubmit}>
+                    <div className={card.manualInputs}>
                       <div>
                         <label htmlFor="final_date">Fecha de cierre</label>
-                        <input type="date" name="final_date" id="final_date" />
+                        <input
+                          type="date"
+                          name="final_date"
+                          id="final_date"
+                          min={getDate()}
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
                       <div>
                         <label htmlFor="comments">Comentarios</label>
                         <textarea
                           name="comments"
                           id="comments"
-                          cols="50"
+                          cols="55"
                           rows="7"
+                          onChange={handleChange}
+                          required
                         ></textarea>
                       </div>
-
                       <button type="submit">Enviar</button>
                     </div>
-                  </div>
-                </form>
+                  </form>
+                </div>
               </div>
+            </div>
+            <div ref={refSuccessModal} className={card.successModal}>
+              {sended}
             </div>
           </main>
         </div>

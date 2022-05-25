@@ -35,6 +35,17 @@ export default function Dashboard() {
   const [usersFlag, setUsersFlag] = useState("Cargando...");
   const [userID, setUserID] = useState(null);
   const [users, setUsers] = useState([]);
+  const [licitaciones, setLicitaciones] = useState([]);
+  const [filteredLicitaciones, setFilteredLicitaciones] = useState([]);
+  const [ofertas, setOfertas] = useState([]);
+  const [filteredOfertas, setFilteredOfertas] = useState([]);
+  const [filterFlag, setFilterFlag] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [porcentaje, setPorcentaje] = useState(null);
+  const [porcentajeAdmin, setPorcentajeAdmin] = useState(null);
+  const [allOffers, setAllOffers] = useState([]);
+  const [allLicitaciones, setAllLicitaciones] = useState([]);
+  const [ofertasCotizadas, setOfertasCotizadas] = useState([]);
 
   // Refs
   let refMenu = useRef(),
@@ -95,6 +106,105 @@ export default function Dashboard() {
     };
     getUser(api + "users/?pendientes=1");
   }, [users, api]);
+  useEffect(() => {
+    let getAllUsers = async (url) => {
+      let res = await fetch(url);
+      let json = await res.json();
+      if (json.length > 0) {
+        setAllUsers(json);
+      }
+    };
+    getAllUsers(api + "users/");
+  }, [api]);
+  useEffect(() => {
+    let getList = async (url) => {
+      try {
+        let res = await fetch(url);
+        let json = await res.json();
+        setLicitaciones(json);
+      } catch (error) {}
+    };
+    getList(api + "licitaciones/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, licitaciones]);
+  useEffect(() => {
+    if (licitaciones.length > 0) {
+      const aux = licitaciones.filter((el) => el.state === "0");
+      setFilteredLicitaciones([...aux]);
+    }
+  }, [licitaciones]);
+  useEffect(() => {
+    let getOffers = async (url) => {
+      try {
+        let res = await fetch(url);
+        let json = await res.json();
+        setOfertas(json);
+      } catch (error) {}
+    };
+    getOffers(api + "ofertas/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, ofertas]);
+  useEffect(() => {
+    if (ofertas.length > 0 && licitaciones.length > 0 && users.length > 0) {
+      const aux = ofertas.filter((el) => el.state === "0");
+      const aux2 = aux.filter(
+        // eslint-disable-next-line eqeqeq
+        (el) => el.lic_id == licitaciones[el.lic_id - 1].id
+      );
+      const aux3 = aux2.filter(
+        (el) =>
+          // eslint-disable-next-line eqeqeq
+          loggedUser.unique_id ==
+          allUsers[licitaciones[el.lic_id - 1].user_id - 1].unique_id
+      );
+      aux.length > 0
+        ? aux2.length > 0 && aux3.length > 0
+          ? setFilteredOfertas([...aux])
+          : setFilterFlag("Vacio")
+        : setFilterFlag("Vacio");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ofertas, licitaciones, users]);
+  useEffect(() => {
+    const getPorcentaje = () => {
+      // const lic = licitaciones.length;
+      const aux = licitaciones.filter(
+        (el) => loggedUser.unique_id == allUsers[el.user_id - 1].unique_id
+      );
+      setAllLicitaciones([...aux]);
+      let lic = allLicitaciones.length;
+      const aux2 = ofertas.filter(
+        // eslint-disable-next-line eqeqeq
+        (el) => el.lic_id == licitaciones[el.lic_id - 1].id
+      );
+      const aux3 = aux2.filter(
+        (el) =>
+          // eslint-disable-next-line eqeqeq
+          loggedUser.unique_id ==
+          allUsers[licitaciones[el.lic_id - 1].user_id - 1].unique_id
+      );
+      setAllOffers([...aux3]);
+      let ofer = allOffers.length;
+      let p = (ofer * 100) / lic;
+      p = Math.floor(p);
+      setPorcentaje(p);
+    };
+    getPorcentaje();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ofertas]);
+  useEffect(() => {
+    const getPorcentaje = () => {
+      const aux = ofertas.filter((el) => el.state === "3");
+      setOfertasCotizadas([...aux]);
+      let ofer = ofertas.length;
+      let cot = ofertasCotizadas.length;
+      let p = (cot * 100) / ofer;
+      p = Math.floor(p);
+      setPorcentajeAdmin(p);
+    };
+    getPorcentaje();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ofertas]);
 
   return (
     <>
@@ -167,13 +277,19 @@ export default function Dashboard() {
                 <div className={styles.pendingCards}>
                   <div className={styles.licitaciones}>
                     <div>
-                      <h4>Tienes 12 licitaciones pendientes</h4>
+                      <h4>
+                        Tienes {filteredLicitaciones.length} licitaciones
+                        pendientes
+                      </h4>
                       <p>
                         Respondelas antes de que pase la fecha de vencimiento!
                       </p>
                     </div>
                     <div>
-                      <Link to="/licitaciones" className={styles.ofertarButton}>
+                      <Link
+                        to="/pending-licitaciones"
+                        className={styles.ofertarButton}
+                      >
                         Ofertar ahora
                       </Link>
                     </div>
@@ -181,7 +297,7 @@ export default function Dashboard() {
                   <div className={styles.dailyReport}>
                     <div>
                       <p className={styles.month}>Este mes</p>
-                      <h3>87%</h3>
+                      <h3>{porcentajeAdmin}%</h3>
                       <p>de las ofertas fueron cotizadas</p>
                     </div>
                     <div>
@@ -212,19 +328,33 @@ export default function Dashboard() {
 
                   <div className={styles.pendingCardsUser}>
                     <div className={styles.ofertas}>
-                      <h4>Tienes 3 ofertas pendientes</h4>
+                      <h4>
+                        Tienes{" "}
+                        {filteredOfertas.length > 0 ? (
+                          <span>{filteredOfertas.length}</span>
+                        ) : filterFlag === "Vacio" ? (
+                          <span>0</span>
+                        ) : (
+                          <span>0</span>
+                        )}{" "}
+                        ofertas pendientes
+                      </h4>
                       <p>
                         Respondelas antes de que pase la fecha de vencimiento de
                         tu licitación!
                       </p>
-                      <Link to="/ofertas" className={styles.ofertarButton}>
+                      <Link
+                        to="/pending-ofertas"
+                        className={styles.ofertarButton}
+                      >
                         Cotizar ahora
                       </Link>
                     </div>
                     <div className={styles.dailyReport}>
                       <div>
                         <p className={styles.month}>Este mes</p>
-                        <h3>87%</h3>
+
+                        <h3>{porcentaje}%</h3>
                         <p>de las licitaciones fueron ofertadas</p>
                       </div>
                       <div>

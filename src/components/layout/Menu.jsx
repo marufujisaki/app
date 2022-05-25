@@ -10,6 +10,7 @@ import {
   faChartLine,
   faTableList,
   faUsers,
+  faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquarePlus, faFileLines } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,10 +33,18 @@ export default function Menu() {
         <p>Licitaciones</p>
         {!loggedUser.user_type ? (
           <div>
-            <Link to="/licitaciones">
-              <FontAwesomeIcon icon={faTableList} />
-              Licitaciones
-            </Link>
+            <div>
+              <Link to="/pending-licitaciones">
+                <FontAwesomeIcon icon={faListCheck} />
+                Pendientes
+              </Link>
+            </div>
+            <div>
+              <Link to="/licitaciones">
+                <FontAwesomeIcon icon={faTableList} />
+                Todas las licitaciones
+              </Link>
+            </div>
           </div>
         ) : (
           <div>
@@ -46,7 +55,7 @@ export default function Menu() {
               </Link>
             </div>
             <div>
-              <Link to="/licitaciones">
+              <Link to="/mis-licitaciones">
                 <FontAwesomeIcon icon={faTableList} />
                 Mis licitaciones
               </Link>
@@ -64,7 +73,7 @@ export default function Menu() {
           </div>
         ) : (
           <div>
-            <Link to="/ofertas">
+            <Link to="/pending-ofertas">
               <FontAwesomeIcon icon={faFileLines} />
               Ofertas pendientes
             </Link>
